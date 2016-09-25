@@ -17,19 +17,20 @@ len0          = hyp.sigL;
 for j = 1:nF
     seps0     = hyp.seps(j);
     thet0     = hyp.thet(j);
-    sInv      = diag(1./max(1e-6,diag(thet0*s)+seps0^2));
-    Minv      = u*sInv*u';
-    Kinv      = u*s*sInv*u';
-    gradK     = Minv*dat.f0(:,j)*dat.f0(:,j)'-eye(size(Minv));
+    sInv      = diag(1./max(1e-6,thet0*diag(s)+seps0^2));
+    Kinv      = u*sInv*u';
+    Kmat      = u*s*sInv*u';
+    fmat      = Kinv*dat.f0(:,j)*dat.f0(:,j)'-eye(size(Kinv));
     if nargin>2
         for d = 1:D
-            gradLen(d) = gradLen(d) + 0.5*trace(thet0*gradK*Minv*(dat.M.*xdiff{d})/len0(d)^3);
+            dKdL = thet0*(dat.M.*xdiff{d})/len0(d)^3;
+            gradLen(d) = gradLen(d) + 0.5*trace(fmat*Kinv*dKdL);
         end
     else
         gradLen = [];
     end
     
-    gradThet(j) = 0.5*trace(gradK*Kinv);
-    gradSeps(j) = seps0*trace(gradK*Minv);
+    gradThet(j) = 0.5*trace(fmat*Kmat);
+    gradSeps(j) = seps0*trace(fmat*Kinv);
 
 end        

@@ -25,7 +25,7 @@ for i = 1:ceil(M/cs)
         r  = squeeze(sum((xp - yp).^2,1));
         Kn = (1 + sqrt(3)*r/sigL) .* exp(-sqrt(3)*r/sigL);
     else
-        Kn = exp( -sum(bsxfun(@times,(xp - yp).^2,1./sigL.^2)/2,1));
+        Kn = exp(-(xp - yp).^2 * (1./(2*sigL.^2)));
     end
     K(:,ii)  = squeeze(Kn); 
 end
