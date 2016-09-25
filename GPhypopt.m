@@ -39,21 +39,15 @@ if ~exist('isamps')
 end
 
 %%%% bayesian optimization settings
-nIter         = 50;       % number of iterations
-nopt          = 100;        % number of hyperparameter opts
-alpha0        = 1e-3;     % learning rate for hyperopt
+nIter         = 80;       % number of iterations
+nopt          = 5;        % number of hyperparameter opts
+alpha0        = 5e-3;     % learning rate for hyperopt
 
 %%%% hyperparameter settings (initial)
 ktype         = 'gaussian';
-if strcmp(ktype,'matern')
-    seps0      = exp(linspace(log(.1),log(.6),nIter)).^2;
-    sigD0      = 9 * linspace(1,1,nIter);
-    thet0      = 1.5;
-else
-    seps0      = .01 * ones(nF,1);
-    sigD0      = 2 * ones(D,1); % different length for each input dim
-    thet0      = 0.75*ones(nF,1);
-end
+seps0         = .2 * ones(nF,1);
+sigD0         = 2 * ones(D,1); % different length for each input dim
+thet0         = 0.5*ones(nF,1);
 clear hyp;
 hyp.sigL      = sigD0; % length scale parameter
 hyp.seps      = seps0; % observation noise
@@ -64,12 +58,14 @@ hyp.alpha     = alpha0;
 hyp.ktype     = ktype; % kernel type
 hyp.isGPU     = isGPU;
 hyp.lenscale  = 1;    % optimize length scale too?
-                      % (only for gaussian kernel atm)
 hyp.thetscale = 1;    % optimize theta
-hyp.sepscale  = 0;    % optimize seps
+hyp.sepscale  = 1;    % optimize seps
+hyp.burnin    = 25;   % how many iterations before hyperparameter
+                      % optimization starts
+
 
 xF=[]; CF=[]; CFk=[];
-for iDat = 2:44
+for iDat = 5%2:44
     tic;
     ixp = isamps;
     % objective function depends on iDat
@@ -99,6 +95,8 @@ for iDat = 2:44
     hyp.seps      = seps0; % observation noise
     hyp.thet      = thet0; % kernel scale
 
+    clear dat;
+    dat.hypPrior  = hyp;
 
     for k = ninit+1:nIter
         % initialize dat

@@ -1,0 +1,1 @@
+function gradlogp(dat,hyp,xdiff)

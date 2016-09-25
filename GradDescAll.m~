@@ -1,4 +1,4 @@
-function hyp = GradDescThetSeps(dat,hyp)
+function hyp = GradDescAll(dat,hyp)
 
 f0            = dat.f0;
 nF            = size(f0,2);
@@ -14,8 +14,9 @@ if hyp.isGPU
     hyp.seps = gpuArray(hyp.seps);
     hyp.thet = gpuArray(hyp.thet);
 end
-logp         = marglikelihood(hyp.seps,hyp.thet,M,u,s,f0);
+
 for k = 1:hyp.nopt
+    logp          = marglikelihood(hyp.seps,hyp.thet,M,u,s,f0);
     [gradS,gradT] = gradlogp(dat,hyp);
 
     % move by gradient and see if marginal improves

@@ -9,7 +9,7 @@ M  = size(yp0,2);
 % split M into chunks if on GPU
 if hyp.isGPU
     K=gpuArray.zeros(N,M,'single');
-    cs  = 20;
+    cs  = 50;
 else
     K= zeros(N,M,'single');
     cs  = M;

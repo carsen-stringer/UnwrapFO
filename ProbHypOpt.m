@@ -18,7 +18,4 @@ clear u v s M x;
 [dat,hyp]     = MaxMargProb(dat,hyp);
 
 %%%% compute acquisition function!
-[dat,hyp]     = AcqFcnProb(dat,hyp);
-
-
-end
+[dat]         = AcqFcnProb(dat,dat.hypPrior);
