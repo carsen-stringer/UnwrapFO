@@ -97,7 +97,7 @@ for iDat = 5%2:44
 
     clear dat;
     dat.hypPrior  = hyp;
-
+    ixp           = isamps
     for k = ninit+1:nIter
         % initialize dat
         if k==ninit+1

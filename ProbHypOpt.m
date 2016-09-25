@@ -11,7 +11,6 @@ dat.M         = M;
 [u s v]       = svd(M);
 dat.u         = u;
 dat.s         = s;
-dat.v         = v;
 clear u v s M x;
 
 %%%% also optimize hyperparameters!

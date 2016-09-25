@@ -25,7 +25,8 @@ for i = 1:ceil(M/cs)
         r  = squeeze(sum((xp - yp).^2,1));
         Kn = (1 + sqrt(3)*r/sigL) .* exp(-sqrt(3)*r/sigL);
     else
-        Kn = exp(-(xp - yp).^2 * (1./(2*sigL.^2)));
+        Kn = exp(-(1./(2*sigL'.^2))*(xp(:,:) - yp(:,:)).^2 );
+        Kn = reshape(Kn,size(xp,2),size(xp,3));
     end
     K(:,ii)  = squeeze(Kn); 
 end

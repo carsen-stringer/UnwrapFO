@@ -10,7 +10,7 @@ for j = 1:nF
     seps0     = hyp.seps(j);
     thet0     = hyp.thet(j);
     sInv      = diag(1./max(1e-6,diag(thet0*dat.s)+seps0^2));
-    Minv      = dat.u*sInv*dat.v';
+    Minv      = dat.u*sInv*dat.u';
     Mf(:,j)   = Minv * (dat.f0(:,j) - mean(dat.f0(:,j))) + mean(dat.f0(:,j));
     fx        = dat.H * Mf(:,j);
     

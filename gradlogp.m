@@ -13,7 +13,7 @@ if hyp.isGPU
     gradThet  = gpuArray.zeros(nF,1,'single');
     gradLen   = gpuArray.zeros(D,1,'single');
 end
-len0          = hyp.sigL;
+sigL          = hyp.sigL;
 for j = 1:nF
     seps0     = hyp.seps(j);
     thet0     = hyp.thet(j);
@@ -23,7 +23,7 @@ for j = 1:nF
     fmat      = Kinv*dat.f0(:,j)*dat.f0(:,j)'-eye(size(Kinv));
     if nargin>2
         for d = 1:D
-            dKdL = thet0*(dat.M.*xdiff{d})/len0(d)^3;
+            dKdL = thet0*(dat.M.*xdiff{d})/sigL(d)^3;
             gradLen(d) = gradLen(d) + 0.5*trace(fmat*Kinv*dKdL);
         end
     else

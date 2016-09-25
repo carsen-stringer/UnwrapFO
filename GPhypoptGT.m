@@ -36,6 +36,7 @@ end
 ninit  = 1;
 if ~exist('isamps')
     isamps    = 8*ones(D,1,'single');
+    isamps = [isamps [7;5;8;3;5]];
 end
 
 %%%% bayesian optimization settings
@@ -64,6 +65,7 @@ hyp.burnin    = 25;   % how many iterations before hyperparameter
                       % optimization starts
 
 
+
 xF=[]; CF=[]; CFk=[];
 for iDat = 5%2:44
     tic;
@@ -80,7 +82,7 @@ for iDat = 5%2:44
 
     % initialize costs
     cstep           = [];
-    cstep(1:ninit)  = ccsm(ixx);
+    cstep(1:ninit+1)  = ccsm(ixx);
     cmin            = min(cstep);
 
     if isGPU
@@ -89,7 +91,7 @@ for iDat = 5%2:44
     end
 
     xk            = zeros(D,nIter+ninit);
-    xk(:,1:ninit) = isamps;
+    xk(:,1:ninit+1) = isamps;
 
     hyp.sigL      = sigD0; % length scale parameter
     hyp.seps      = seps0; % observation noise
@@ -97,7 +99,6 @@ for iDat = 5%2:44
 
     clear dat;
     dat.hypPrior  = hyp;
-
     for k = ninit+1:nIter
         % initialize dat
         if k==ninit+1
@@ -109,7 +110,7 @@ for iDat = 5%2:44
             dat.xsamps = ixp;
             dat.rp   = xD;
         end
-        [xprop,pprop,dat,hyp]   = OptProb5d(dat,hyp);
+        [xprop,pprop,dat,hyp]   = OptProbGT(dat,hyp);
         if isGPU
             xprop   = gather(xprop);
             pprop   = gather(pprop);
@@ -119,8 +120,8 @@ for iDat = 5%2:44
         xk(:,k)     = xprop;
 
         % compute minimum
-        cstep(k)  = ccsm(xprop(1),xprop(2),xprop(3),xprop(4),xprop(5));
-        cmin(k)   = min(cstep);
+        cstep(k)    = ccsm(xprop(1),xprop(2),xprop(3),xprop(4),xprop(5));
+        cmin(k)     = min(cstep);
         fprintf('%d\t%2.4f\t%2.2f\t%d',k,cmin(k),pprop,sum(ccsm(:)<cmin(k)))
         fprintf('\t%d',xprop);
         fprintf('\n');

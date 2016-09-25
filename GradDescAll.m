@@ -45,7 +45,7 @@ for k = 1:hyp.nopt
         gradSeps  = gradS*mm + gradSeps*(1-mm);
         sepsg     = max(0,hyp.seps + gradSeps*hyp.alpha);
     else      
-        sepsg     = hyps.seps;
+        sepsg     = hyp.seps;
     end
     % length gradient
     gradLens      = gradLen* mm + gradLens*(1-mm);
@@ -56,9 +56,10 @@ for k = 1:hyp.nopt
     % compute marginal
     logpg         = marglikelihood(sepsg,thetg,Mg,ug,sg,f0);
 
-    hyp.seps  = sepsg;
-    hyp.thet  = thetg;
-    hyp.sigL  = leng;
+    logk(k)       = sum(logpg);
+    hyp.seps      = sepsg;
+    hyp.thet      = thetg;
+    hyp.sigL      = leng;
     
     % stop gradients if not descending
     if 0

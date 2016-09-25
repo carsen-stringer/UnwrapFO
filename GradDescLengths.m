@@ -26,7 +26,7 @@ for k = 1:hyp.nopt
     mm            = 0.1;
 
     % compute gradient - sum over feature dims
-    gradLen       = gradlogp(dat,hyp,xdiff);
+    [~,~,gradLen] = gradlogp(dat,hyp,xdiff);
     gradLens      = gradLens*(1-mm) + mm*gradLen;
     leng          = max(0.5,hyp.sigL + gradLens*hyp.alpha);
     Mg            = kernelD(x,x,hyp,leng);
@@ -34,18 +34,20 @@ for k = 1:hyp.nopt
     logpj         = marglikelihood(hyp.seps,hyp.thet,Mg,ug,sg,f0);
     logpg         = sum(logpj);
 
-    %logk(k)       = gather(logpg);
+    logk(k)       = gather(logpg);
     %disp([logp logpg gradLens']);
    
     % stop gradients if not descending
-    if logpg > logp
-        logp      = logpg;
-        hyp.sigL  = leng;
-        dat.M     = Mg;
-        dat.u     = ug;
-        dat.s     = sg;
-    else
-        break;
+    if 0
+        if logpg > logp
+            logp      = logpg;
+            hyp.sigL  = leng;
+            dat.M     = Mg;
+            dat.u     = ug;
+            dat.s     = sg;
+        else
+            break;
+        end
     end
 end
 

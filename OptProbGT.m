@@ -1,4 +1,4 @@
-function  [xprop,pmax,dat,hyp]       = OptProb5d(dat,hyp)
+function  [xprop,pmax,dat,hyp]       = OptProbGT(dat,hyp)
 
 %%%% simulate observed points 
 %    (in this case pull from grid values f)
@@ -27,7 +27,7 @@ for j = 1:nF
     fx        = H * Mf(:,j);
     S         = thet0*(1 - sum(H.*(H * Minv), 2));
     S         = max(1e-6,S);
-    keyboard;
+    %keyboard;
     dat.f0(size(dat.xsamps,2),j) = fx + fmean + randn*S;
 end
 
