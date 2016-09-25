@@ -1,0 +1,24 @@
+function [dat,hyp]      = ProbHypOpt(dat,hyp)
+
+%%%% simulations that have been observed
+x             = dat.xsamps;
+dat.f0        = fD(dat.f,x)';
+% xsamps-observed kernel
+M             = kernelD(x,x,hyp,hyp.sigL);
+dat.M         = M;
+
+%%%% invert samps-to-samps kernel
+[u s v]       = svd(M);
+dat.u         = u;
+dat.s         = s;
+dat.v         = v;
+clear u v s isamps f0;
+
+%%%% also optimize hyperparameters!
+[dat,hyp]     = MaxMargProb(dat,hyp);
+
+%%%% compute acquisition function!
+[dat,hyp]     = AcqFcnProb(dat,hyp);
+
+
+end
